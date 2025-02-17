@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// PolicyWithTimeout is a policy that sets a timeout on the context before executing the action.
 type PolicyWithTimeout struct {
 	Policy
 	timeout time.Duration

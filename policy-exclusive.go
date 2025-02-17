@@ -5,6 +5,7 @@ import (
 	"sync"
 )
 
+// PolicyWithExclusiveExecution is a policy that ensures that only one action is executed at a time.
 type PolicyWithExclusiveExecution struct {
 	Policy Policy
 	sync.Mutex

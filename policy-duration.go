@@ -10,6 +10,7 @@ type Named interface {
 	Name() string
 }
 
+// PolicyWithDuration is a policy that executes the action and logs the duration.
 type PolicyWithDuration struct {
 	Policy
 	logger   log.Logger

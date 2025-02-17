@@ -9,6 +9,7 @@ type Control interface {
 	Leave()
 }
 
+// PolicyWithAsyncExecution is a policy that executes the action in a separate goroutine.
 type PolicyWithAsyncExecution struct {
 	Executor
 	control Control
@@ -41,6 +42,7 @@ func (that *PolicyWithAsyncExecution) Execute(ctx context.Context, action Action
 	return nil
 }
 
+// PolicyWithPoolExecution is a policy that executes the action in a separate goroutine.
 type PolicyWithPoolExecution struct {
 	Executor
 	pool    chan struct{}

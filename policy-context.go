@@ -4,6 +4,7 @@ import (
 	"context"
 )
 
+// PolicyWithContextValue is a policy that sets a value in the context before executing the action.
 type PolicyWithContextValue struct {
 	Policy
 	key   interface{}

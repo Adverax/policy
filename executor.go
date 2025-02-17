@@ -21,6 +21,10 @@ func NewBaseExecutor(
 	policy Policy,
 	errors ErrorHandler,
 ) *BaseExecutor {
+	if errors == nil {
+		errors = defErrorHandler
+	}
+
 	return &BaseExecutor{
 		policy: policy,
 		errors: errors,

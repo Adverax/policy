@@ -16,6 +16,7 @@ type RetryPolicyMetrics interface {
 	IncAttempts()
 }
 
+// RetryPolicyOptions contains the options for the retry policy.
 type RetryPolicyOptions struct {
 	InitialInterval       time.Duration
 	BackoffCoefficient    float64

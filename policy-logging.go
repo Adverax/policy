@@ -10,35 +10,30 @@ type Loggable interface {
 	Log(ctx context.Context, logger log.Logger)
 }
 
-type PolicyWithLoggging struct {
+// PolicyWithLogging is a policy that logs the action before executing it.
+type PolicyWithLogging struct {
 	Policy
 	logger log.Logger
 }
 
-func NewPolicyWithLogging(policy Policy, logger log.Logger) *PolicyWithLoggging {
-	return &PolicyWithLoggging{
+func NewPolicyWithLogging(policy Policy, logger log.Logger) *PolicyWithLogging {
+	return &PolicyWithLogging{
 		Policy: policy,
 		logger: logger,
 	}
 }
 
-func (that *PolicyWithLoggging) Execute(ctx context.Context, action Action) error {
+func (that *PolicyWithLogging) Execute(ctx context.Context, action Action) error {
 	if a, ok := action.(Loggable); ok {
 		a.Log(ctx, that.logger)
 
 		err := that.Policy.Execute(ctx, action)
 		if err != nil {
-			that.logger.WithError(err).Errorf(ctx, "error executing action %s", a.Name())
 			return err
 		}
 
 		return nil
 	}
 
-	err := that.Policy.Execute(ctx, action)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return that.Policy.Execute(ctx, action)
 }

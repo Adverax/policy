@@ -8,6 +8,7 @@ type Tracer interface {
 	NewTrace(ctx context.Context, info string) context.Context
 }
 
+// PolicyWithTraceId is a policy that adds trace id to the context.
 type PolicyWithTraceId struct {
 	Policy
 	tracer Tracer

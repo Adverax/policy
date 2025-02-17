@@ -2,6 +2,7 @@ package policy
 
 import "context"
 
+// DefaultPolicy is a policy that executes the action as is.
 type DefaultPolicy struct{}
 
 func NewDefaultPolicy() *DefaultPolicy {

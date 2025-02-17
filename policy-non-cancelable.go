@@ -4,6 +4,7 @@ import (
 	"context"
 )
 
+// PolicyNonCancelable is a policy that makes the action non-cancelable.
 type PolicyNonCancelable struct {
 	Policy
 }

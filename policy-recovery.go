@@ -6,6 +6,7 @@ import (
 	"github.com/adverax/log"
 )
 
+// PolicyWithRecovery is a policy that recovers from panics.
 type PolicyWithRecovery struct {
 	Policy
 	logger log.Logger
