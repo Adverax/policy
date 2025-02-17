@@ -8,28 +8,28 @@ type Tracer interface {
 	NewTrace(ctx context.Context, info string) context.Context
 }
 
-// PolicyWithTraceId is a policy that adds trace id to the context.
-type PolicyWithTraceId struct {
+// WithTraceId is a policy that adds trace id to the context.
+type WithTraceId struct {
 	Policy
 	tracer Tracer
 	info   string
 }
 
-func (that *PolicyWithTraceId) Execute(ctx context.Context, action Action) error {
+func (that *WithTraceId) Execute(ctx context.Context, action Action) error {
 	ctx = that.tracer.NewTrace(ctx, that.info)
 	return that.Policy.Execute(ctx, action)
 }
 
-func NewPolicyWithTraceId(
+func NewWithTraceId(
 	policy Policy,
 	tracer Tracer,
 	info string,
-) *PolicyWithTraceId {
+) *WithTraceId {
 	if policy == nil {
 		policy = dummyPolicy
 	}
 
-	return &PolicyWithTraceId{
+	return &WithTraceId{
 		Policy: policy,
 		tracer: tracer,
 		info:   info,

@@ -5,17 +5,17 @@ import (
 	"sync"
 )
 
-// PolicyWithExclusiveExecution is a policy that ensures that only one action is executed at a time.
-type PolicyWithExclusiveExecution struct {
+// WithExclusiveExecution is a policy that ensures that only one action is executed at a time.
+type WithExclusiveExecution struct {
 	Policy Policy
 	sync.Mutex
 }
 
-func NewPolicyWithExclusiveExecution(policy Policy) *PolicyWithExclusiveExecution {
-	return &PolicyWithExclusiveExecution{Policy: policy}
+func NewWithExclusiveExecution(policy Policy) *WithExclusiveExecution {
+	return &WithExclusiveExecution{Policy: policy}
 }
 
-func (that *PolicyWithExclusiveExecution) Execute(ctx context.Context, action Action) error {
+func (that *WithExclusiveExecution) Execute(ctx context.Context, action Action) error {
 	that.Lock()
 	defer that.Unlock()
 

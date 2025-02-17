@@ -10,21 +10,21 @@ type Named interface {
 	Name() string
 }
 
-// PolicyWithDuration is a policy that executes the action and logs the duration.
-type PolicyWithDuration struct {
+// WithDuration is a policy that executes the action and logs the duration.
+type WithDuration struct {
 	Policy
 	logger   log.Logger
 	limit    time.Duration
 	wantInfo bool
 }
 
-func NewPolicyWithDuration(
+func NewWithDuration(
 	policy Policy,
 	logger log.Logger,
 	limit time.Duration,
 	wantInfo bool,
-) *PolicyWithDuration {
-	return &PolicyWithDuration{
+) *WithDuration {
+	return &WithDuration{
 		Policy:   policy,
 		logger:   logger,
 		limit:    limit,
@@ -32,7 +32,7 @@ func NewPolicyWithDuration(
 	}
 }
 
-func (that *PolicyWithDuration) Execute(ctx context.Context, action Action) error {
+func (that *WithDuration) Execute(ctx context.Context, action Action) error {
 	if a, ok := action.(Named); ok {
 		started := time.Now()
 

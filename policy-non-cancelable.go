@@ -4,24 +4,24 @@ import (
 	"context"
 )
 
-// PolicyNonCancelable is a policy that makes the action non-cancelable.
-type PolicyNonCancelable struct {
+// NonCancelable is a policy that makes the action non-cancelable.
+type NonCancelable struct {
 	Policy
 }
 
-func (that *PolicyNonCancelable) Execute(ctx context.Context, action Action) error {
+func (that *NonCancelable) Execute(ctx context.Context, action Action) error {
 	ctx = &nonCancelableContext{Context: ctx}
 	return that.Policy.Execute(ctx, action)
 }
 
-func NewPolicyNonCancelable(
+func NewNonCancelable(
 	policy Policy,
-) *PolicyNonCancelable {
+) *NonCancelable {
 	if policy == nil {
 		policy = dummyPolicy
 	}
 
-	return &PolicyNonCancelable{
+	return &NonCancelable{
 		Policy: policy,
 	}
 }

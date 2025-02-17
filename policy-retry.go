@@ -31,23 +31,23 @@ type retryState struct {
 	attempts int
 }
 
-type PolicyWithRetry struct {
+type WithRetry struct {
 	Policy
 	options RetryPolicyOptions
 }
 
-func NewPolicyWithRetry(policy Policy, options RetryPolicyOptions) *PolicyWithRetry {
+func NewWithRetry(policy Policy, options RetryPolicyOptions) *WithRetry {
 	if policy == nil {
 		policy = dummyPolicy
 	}
 
-	return &PolicyWithRetry{
+	return &WithRetry{
 		options: options,
 		Policy:  policy,
 	}
 }
 
-func (that *PolicyWithRetry) Execute(ctx context.Context, action Action) error {
+func (that *WithRetry) Execute(ctx context.Context, action Action) error {
 	err := that.Policy.Execute(ctx, action)
 	if err == nil {
 		that.success()
@@ -69,7 +69,7 @@ func (that *PolicyWithRetry) Execute(ctx context.Context, action Action) error {
 	return err
 }
 
-func (that *PolicyWithRetry) retry(ctx context.Context, action Action, err error) error {
+func (that *WithRetry) retry(ctx context.Context, action Action, err error) error {
 	state := retryState{
 		interval: that.options.InitialInterval,
 	}
@@ -91,7 +91,7 @@ func (that *PolicyWithRetry) retry(ctx context.Context, action Action, err error
 	return err
 }
 
-func (that *PolicyWithRetry) canAttempt(err error, state *retryState) bool {
+func (that *WithRetry) canAttempt(err error, state *retryState) bool {
 	if !that.IsRetryableError(err) {
 		return false
 	}
@@ -110,25 +110,25 @@ func (that *PolicyWithRetry) canAttempt(err error, state *retryState) bool {
 	return true
 }
 
-func (that *PolicyWithRetry) success() {
+func (that *WithRetry) success() {
 	if that.options.Metrics != nil {
 		that.options.Metrics.IncSuccess()
 	}
 }
 
-func (that *PolicyWithRetry) failure() {
+func (that *WithRetry) failure() {
 	if that.options.Metrics != nil {
 		that.options.Metrics.IncFailure()
 	}
 }
 
-func (that *PolicyWithRetry) attempt() {
+func (that *WithRetry) attempt() {
 	if that.options.Metrics != nil {
 		that.options.Metrics.IncAttempts()
 	}
 }
 
-func (that *PolicyWithRetry) IsRetryableError(err error) bool {
+func (that *WithRetry) IsRetryableError(err error) bool {
 	return that.options.RetryableErrorChecker == nil || that.options.RetryableErrorChecker.IsRetryableError(err)
 }
 
@@ -136,7 +136,7 @@ type retryErrorChecker struct {
 	nonRetryableErrors []error
 }
 
-func NewRetryErrorChecker(nonRetryableErrors []error) RetryPolicyErrorChecker {
+func NewErrorChecker(nonRetryableErrors []error) RetryPolicyErrorChecker {
 	return &retryErrorChecker{
 		nonRetryableErrors: nonRetryableErrors,
 	}

@@ -9,29 +9,29 @@ type Control interface {
 	Leave()
 }
 
-// PolicyWithAsyncExecution is a policy that executes the action in a separate goroutine.
-type PolicyWithAsyncExecution struct {
+// WithAsyncExecution is a policy that executes the action in a separate goroutine.
+type WithAsyncExecution struct {
 	Executor
 	control Control
 }
 
-func newPolicyWithAsyncExecution(
+func NewWithAsyncExecution(
 	executor Executor,
 	control Control,
-) *PolicyWithAsyncExecution {
+) *WithAsyncExecution {
 	if control == nil {
 		control = dummyWG
 	}
 	if executor == nil {
 		executor = NewDefaultExecutor()
 	}
-	return &PolicyWithAsyncExecution{
+	return &WithAsyncExecution{
 		control:  control,
 		Executor: executor,
 	}
 }
 
-func (that *PolicyWithAsyncExecution) Execute(ctx context.Context, action Action) error {
+func (that *WithAsyncExecution) Execute(ctx context.Context, action Action) error {
 	that.control.Enter()
 	go func() {
 		defer that.control.Leave()
@@ -42,18 +42,18 @@ func (that *PolicyWithAsyncExecution) Execute(ctx context.Context, action Action
 	return nil
 }
 
-// PolicyWithPoolExecution is a policy that executes the action in a separate goroutine.
-type PolicyWithPoolExecution struct {
+// WithPoolExecution is a policy that executes the action in a separate goroutine.
+type WithPoolExecution struct {
 	Executor
 	pool    chan struct{}
 	control Control
 }
 
-func newPolicyWithPoolExecution(
+func NewWithPoolExecution(
 	executor Executor,
 	control Control,
 	size int,
-) *PolicyWithPoolExecution {
+) *WithPoolExecution {
 	if control == nil {
 		control = dummyWG
 	}
@@ -66,14 +66,14 @@ func newPolicyWithPoolExecution(
 		pool <- struct{}{}
 	}
 
-	return &PolicyWithPoolExecution{
+	return &WithPoolExecution{
 		pool:     pool,
 		control:  control,
 		Executor: executor,
 	}
 }
 
-func (that *PolicyWithPoolExecution) Execute(ctx context.Context, action Action) error {
+func (that *WithPoolExecution) Execute(ctx context.Context, action Action) error {
 	that.control.Enter()
 
 	select {
@@ -94,16 +94,16 @@ func (that *PolicyWithPoolExecution) Execute(ctx context.Context, action Action)
 	return nil
 }
 
-func NewSimultaneouslyPolicy(
+func NewWithSimultaneously(
 	executor Executor,
 	control Control,
 	size int,
 ) Policy {
 	if size == 0 {
-		return newPolicyWithAsyncExecution(executor, control)
+		return NewWithAsyncExecution(executor, control)
 	}
 
-	return newPolicyWithPoolExecution(executor, control, size)
+	return NewWithPoolExecution(executor, control, size)
 }
 
 type dummyWaitGroup struct {

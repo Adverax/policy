@@ -5,25 +5,25 @@ import (
 	"time"
 )
 
-// PolicyWithTimeout is a policy that sets a timeout on the context before executing the action.
-type PolicyWithTimeout struct {
+// WithTimeout is a policy that sets a timeout on the context before executing the action.
+type WithTimeout struct {
 	Policy
 	timeout time.Duration
 }
 
-func (that *PolicyWithTimeout) Execute(ctx context.Context, action Action) error {
+func (that *WithTimeout) Execute(ctx context.Context, action Action) error {
 	ctx2, cancel := context.WithTimeout(ctx, that.timeout)
 	defer cancel()
 
 	return that.Policy.Execute(ctx2, action)
 }
 
-func NewPolicyWithTimeout(policy Policy, timeout time.Duration) *PolicyWithTimeout {
+func NewWithTimeout(policy Policy, timeout time.Duration) *WithTimeout {
 	if policy == nil {
 		policy = dummyPolicy
 	}
 
-	return &PolicyWithTimeout{
+	return &WithTimeout{
 		Policy:  policy,
 		timeout: timeout,
 	}

@@ -43,7 +43,7 @@ func (that *BaseExecutor) Execute(
 
 func NewDefaultExecutor() Executor {
 	return NewBaseExecutor(
-		NewDefaultPolicy(),
+		NewDefault(),
 		defErrorHandler,
 	)
 }

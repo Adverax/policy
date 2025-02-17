@@ -7,10 +7,10 @@ import (
 )
 
 func ExamplePolicy() {
-	policy := NewPolicyWithRecovery(
-		NewPolicyWithExclusiveExecution(
-			NewPolicyWithContextValue(
-				NewPolicyWithTimeout(nil, time.Minute),
+	policy := NewWithRecovery(
+		NewWithExclusiveExecution(
+			NewWithContextValue(
+				NewWithTimeout(nil, time.Minute),
 				"my_key",
 				"my_value",
 			),

@@ -6,13 +6,13 @@ import (
 	"github.com/adverax/log"
 )
 
-// PolicyWithRecovery is a policy that recovers from panics.
-type PolicyWithRecovery struct {
+// WithRecovery is a policy that recovers from panics.
+type WithRecovery struct {
 	Policy
 	logger log.Logger
 }
 
-func (that *PolicyWithRecovery) Execute(ctx context.Context, action Action) (err error) {
+func (that *WithRecovery) Execute(ctx context.Context, action Action) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = fmt.Errorf("panic recovered: %v", r)
@@ -25,12 +25,12 @@ func (that *PolicyWithRecovery) Execute(ctx context.Context, action Action) (err
 	return that.Policy.Execute(ctx, action)
 }
 
-func NewPolicyWithRecovery(policy Policy, logger log.Logger) *PolicyWithRecovery {
+func NewWithRecovery(policy Policy, logger log.Logger) *WithRecovery {
 	if policy == nil {
 		policy = dummyPolicy
 	}
 
-	return &PolicyWithRecovery{
+	return &WithRecovery{
 		Policy: policy,
 		logger: logger,
 	}
