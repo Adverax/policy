@@ -7,7 +7,7 @@ import (
 
 // WithTimeout is a policy that sets a timeout on the context before executing the action.
 type WithTimeout struct {
-	Policy
+	policy  Policy
 	timeout time.Duration
 }
 
@@ -15,7 +15,7 @@ func (that *WithTimeout) Execute(ctx context.Context, action Action) error {
 	ctx2, cancel := context.WithTimeout(ctx, that.timeout)
 	defer cancel()
 
-	return that.Policy.Execute(ctx2, action)
+	return that.policy.Execute(ctx2, action)
 }
 
 func NewWithTimeout(policy Policy, timeout time.Duration) *WithTimeout {
@@ -24,7 +24,7 @@ func NewWithTimeout(policy Policy, timeout time.Duration) *WithTimeout {
 	}
 
 	return &WithTimeout{
-		Policy:  policy,
+		policy:  policy,
 		timeout: timeout,
 	}
 }

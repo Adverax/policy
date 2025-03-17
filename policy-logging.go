@@ -13,13 +13,13 @@ type Loggable interface {
 
 // WithLogging is a policy that logs the action before executing it.
 type WithLogging struct {
-	Policy
+	policy Policy
 	logger log.Logger
 }
 
 func NewWithLogging(policy Policy, logger log.Logger) *WithLogging {
 	return &WithLogging{
-		Policy: policy,
+		policy: policy,
 		logger: logger,
 	}
 }
@@ -28,7 +28,7 @@ func (that *WithLogging) Execute(ctx context.Context, action Action) error {
 	if a, ok := action.(Loggable); ok {
 		a.LogEnter(ctx, that.logger)
 
-		err := that.Policy.Execute(ctx, action)
+		err := that.policy.Execute(ctx, action)
 		if err != nil {
 			a.LogError(ctx, that.logger, err)
 			return err
@@ -38,5 +38,5 @@ func (that *WithLogging) Execute(ctx context.Context, action Action) error {
 		return nil
 	}
 
-	return that.Policy.Execute(ctx, action)
+	return that.policy.Execute(ctx, action)
 }

@@ -32,7 +32,7 @@ type retryState struct {
 }
 
 type WithRetry struct {
-	Policy
+	policy  Policy
 	options RetryPolicyOptions
 }
 
@@ -43,12 +43,12 @@ func NewWithRetry(policy Policy, options RetryPolicyOptions) *WithRetry {
 
 	return &WithRetry{
 		options: options,
-		Policy:  policy,
+		policy:  policy,
 	}
 }
 
 func (that *WithRetry) Execute(ctx context.Context, action Action) error {
-	err := that.Policy.Execute(ctx, action)
+	err := that.policy.Execute(ctx, action)
 	if err == nil {
 		that.success()
 		return nil
@@ -83,7 +83,7 @@ func (that *WithRetry) retry(ctx context.Context, action Action, err error) erro
 		state.attempts++
 		that.attempt()
 
-		err = that.Policy.Execute(ctx, action)
+		err = that.policy.Execute(ctx, action)
 		if err == nil {
 			return nil
 		}

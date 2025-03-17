@@ -8,7 +8,7 @@ import (
 
 // WithRecovery is a policy that recovers from panics.
 type WithRecovery struct {
-	Policy
+	policy Policy
 	logger log.Logger
 }
 
@@ -22,7 +22,7 @@ func (that *WithRecovery) Execute(ctx context.Context, action Action) (err error
 		}
 	}()
 
-	return that.Policy.Execute(ctx, action)
+	return that.policy.Execute(ctx, action)
 }
 
 func NewWithRecovery(policy Policy, logger log.Logger) *WithRecovery {
@@ -31,7 +31,7 @@ func NewWithRecovery(policy Policy, logger log.Logger) *WithRecovery {
 	}
 
 	return &WithRecovery{
-		Policy: policy,
+		policy: policy,
 		logger: logger,
 	}
 }

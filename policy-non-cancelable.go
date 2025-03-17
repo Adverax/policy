@@ -6,12 +6,12 @@ import (
 
 // NonCancelable is a policy that makes the action non-cancelable.
 type NonCancelable struct {
-	Policy
+	policy Policy
 }
 
 func (that *NonCancelable) Execute(ctx context.Context, action Action) error {
 	ctx = &nonCancelableContext{Context: ctx}
-	return that.Policy.Execute(ctx, action)
+	return that.policy.Execute(ctx, action)
 }
 
 func NewNonCancelable(
@@ -22,7 +22,7 @@ func NewNonCancelable(
 	}
 
 	return &NonCancelable{
-		Policy: policy,
+		policy: policy,
 	}
 }
 

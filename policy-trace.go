@@ -10,14 +10,14 @@ type Tracer interface {
 
 // WithTraceId is a policy that adds trace id to the context.
 type WithTraceId struct {
-	Policy
+	policy Policy
 	tracer Tracer
 	info   string
 }
 
 func (that *WithTraceId) Execute(ctx context.Context, action Action) error {
 	ctx = that.tracer.NewTrace(ctx, that.info)
-	return that.Policy.Execute(ctx, action)
+	return that.policy.Execute(ctx, action)
 }
 
 func NewWithTraceId(
@@ -30,7 +30,7 @@ func NewWithTraceId(
 	}
 
 	return &WithTraceId{
-		Policy: policy,
+		policy: policy,
 		tracer: tracer,
 		info:   info,
 	}
