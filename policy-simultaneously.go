@@ -9,29 +9,29 @@ type Control interface {
 	Leave()
 }
 
-// WithAsyncExecution is a policy that executes the action in a separate goroutine.
-type WithAsyncExecution struct {
+// WithAsync is a policy that executes the action in a separate goroutine.
+type WithAsync struct {
 	Executor
 	control Control
 }
 
-func NewWithAsyncExecution(
+func NewWithAsync(
 	executor Executor,
 	control Control,
-) *WithAsyncExecution {
+) *WithAsync {
 	if control == nil {
 		control = dummyWG
 	}
 	if executor == nil {
 		executor = NewDefaultExecutor()
 	}
-	return &WithAsyncExecution{
+	return &WithAsync{
 		control:  control,
 		Executor: executor,
 	}
 }
 
-func (that *WithAsyncExecution) Execute(ctx context.Context, action Action) error {
+func (that *WithAsync) Execute(ctx context.Context, action Action) error {
 	that.control.Enter()
 	go func() {
 		defer that.control.Leave()
@@ -42,18 +42,18 @@ func (that *WithAsyncExecution) Execute(ctx context.Context, action Action) erro
 	return nil
 }
 
-// WithPoolExecution is a policy that executes the action in a separate goroutine.
-type WithPoolExecution struct {
+// WithPool is a policy that executes the action in a separate goroutine.
+type WithPool struct {
 	Executor
 	pool    chan struct{}
 	control Control
 }
 
-func NewWithPoolExecution(
+func NewWithPool(
 	executor Executor,
 	control Control,
 	size int,
-) *WithPoolExecution {
+) *WithPool {
 	if control == nil {
 		control = dummyWG
 	}
@@ -66,14 +66,14 @@ func NewWithPoolExecution(
 		pool <- struct{}{}
 	}
 
-	return &WithPoolExecution{
+	return &WithPool{
 		pool:     pool,
 		control:  control,
 		Executor: executor,
 	}
 }
 
-func (that *WithPoolExecution) Execute(ctx context.Context, action Action) error {
+func (that *WithPool) Execute(ctx context.Context, action Action) error {
 	that.control.Enter()
 
 	select {
@@ -100,10 +100,10 @@ func NewWithSimultaneously(
 	size int,
 ) Policy {
 	if size == 0 {
-		return NewWithAsyncExecution(executor, control)
+		return NewWithAsync(executor, control)
 	}
 
-	return NewWithPoolExecution(executor, control, size)
+	return NewWithPool(executor, control, size)
 }
 
 type dummyWaitGroup struct {

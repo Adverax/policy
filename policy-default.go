@@ -9,7 +9,7 @@ func NewDefault() *DefaultPolicy {
 	return &DefaultPolicy{}
 }
 
-func (c *DefaultPolicy) Execute(ctx context.Context, action Action) error {
+func (that *DefaultPolicy) Execute(ctx context.Context, action Action) error {
 	return action.Execute(ctx)
 }
 

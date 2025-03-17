@@ -6,8 +6,9 @@ import (
 )
 
 type Loggable interface {
-	Named
-	Log(ctx context.Context, logger log.Logger)
+	LogEnter(ctx context.Context, logger log.Logger)
+	LogLeave(ctx context.Context, logger log.Logger)
+	LogError(ctx context.Context, logger log.Logger, err error)
 }
 
 // WithLogging is a policy that logs the action before executing it.
@@ -25,13 +26,15 @@ func NewWithLogging(policy Policy, logger log.Logger) *WithLogging {
 
 func (that *WithLogging) Execute(ctx context.Context, action Action) error {
 	if a, ok := action.(Loggable); ok {
-		a.Log(ctx, that.logger)
+		a.LogEnter(ctx, that.logger)
 
 		err := that.Policy.Execute(ctx, action)
 		if err != nil {
+			a.LogError(ctx, that.logger, err)
 			return err
 		}
 
+		a.LogLeave(ctx, that.logger)
 		return nil
 	}
 

@@ -8,7 +8,7 @@ import (
 
 func ExamplePolicy() {
 	policy := NewWithRecovery(
-		NewWithExclusiveExecution(
+		NewWithExclusive(
 			NewWithContextValue(
 				NewWithTimeout(nil, time.Minute),
 				"my_key",
